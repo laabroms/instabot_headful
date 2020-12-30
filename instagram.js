@@ -132,7 +132,7 @@ const instagram = {
 
     const commentsLength = comments.length;
 
-    let iterationNum = randomIntInc(1, 4);
+    let iterationNum = randomIntInc(2, 5);
     console.log("Iteration Number: " + iterationNum);
 
     for (var i = 0; i < iterationNum; i++) {
