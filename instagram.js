@@ -83,7 +83,8 @@ const instagram = {
     // await instagram.page.waitForNavigation({ waitUntil: "networkidle2" })
   },
 
-  likeTagsProcess: async (tags = [], likeNum = []) => {
+  likeTagsProcess: async (tags = [], likeNum = [], comments = []) => {
+    let commentsLength = comments.length;
     for (let tag of tags) {
       var i = 0;
       // nav tag page
@@ -110,6 +111,22 @@ const instagram = {
 
         if (isLikable) {
           await instagram.page.click('section > span > button[type="button"]');
+
+          var willComment = randomIntInc(0, 1);
+          console.log(willComment);
+          if (willComment === 1) {
+            let comment = comments[randomIntInc(0, commentsLength - 1)];
+            let commentBox = await instagram.page.$("form > textarea");
+            if (commentBox) {
+              await instagram.page.type("form > textarea", comment, {
+                delay: 50,
+              });
+              await instagram.page.waitForTimeout(randomIntInc(2, 4) * 1000);
+
+              let post = await instagram.page.$("form > button");
+              post.click();
+            }
+          }
         }
 
         await instagram.page.waitForTimeout(2000);
@@ -150,13 +167,16 @@ const instagram = {
           }) > div > section > span > button > div > span > svg[aria-label='Like']`
         );
 
-        if (isLikable) {
+        var willLike = randomIntInc(0, 2);
+        console.log("Will like: " + willLike);
+
+        if (isLikable && willLike !== 0) {
           console.log("this is likeable");
           await instagram.page.waitForTimeout(1000);
           await isLikable.click();
           await instagram.page.waitForTimeout(3000);
           var willComment = randomIntInc(0, 1);
-          console.log(willComment);
+          console.log("Will comment: " + willComment);
           if (willComment === 1) {
             let comment = comments[randomIntInc(0, commentsLength - 1)];
             await instagram.page.type(
@@ -187,11 +207,15 @@ const instagram = {
     let story = await instagram.page.$("li > div > button");
     await instagram.page.waitForTimeout(2000);
     story.click();
-    console.log('Here')
+    console.log("Here");
     await instagram.page.waitForSelector('div[role="dialog"]');
     for (var x = 0; x < 50; x++) {
-      let rightArrow = await instagram.page.$("button > div.coreSpriteRightChevron");
-      rightArrow.click();
+      let rightArrow = await instagram.page.$(
+        "button > div.coreSpriteRightChevron"
+      );
+      if (rightArrow) {
+        rightArrow.click();
+      }
       await instagram.page.waitForTimeout(2000);
     }
   },

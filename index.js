@@ -5,7 +5,7 @@ function randomIntInc(min, max) {
 }
 
 
-const tags = ["astronomy", "astrophotography", 'photography'];
+const tags = ['space'];
 
 const comments = [
       "sick shot🔥",
@@ -34,12 +34,12 @@ for (var x = 0; x < tags.length; x++) {
 
   await ig.login("edits.laa", "Luca$Abrom$28");
 
-  await ig.likeTagsProcess(tags, likeCount);
+  await ig.likeTagsProcess(tags, likeCount, comments);
 
 
   await ig.likeAndCommentInFeed(comments);
 
-  // await ig.viewStories();
+  await ig.viewStories();
 
   ig.browser.close();
 })(); 
