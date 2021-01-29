@@ -5,7 +5,7 @@ function randomIntInc(min, max) {
 }
 
 
-const tags = ['space'];
+const tags = ['photography', 'photooftheday', 'photo', 'likeforlikes', 'instadaily'];
 
 const comments = [
       "sick shot🔥",
@@ -32,12 +32,12 @@ for (var x = 0; x < tags.length; x++) {
 (async () => {
   await ig.initialize();
 
-  await ig.login("edits.laa", "Luca$Abrom$28");
+  await ig.login("USERNAME", "PASSWORD");
 
-  await ig.likeTagsProcess(tags, likeCount, comments);
+  // await ig.likeTagsProcess(tags, likeCount, comments);
 
 
-  await ig.likeAndCommentInFeed(comments);
+  // await ig.likeAndCommentInFeed(comments);
 
   await ig.viewStories();
 

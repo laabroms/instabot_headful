@@ -10,9 +10,20 @@ const instagram = {
   initialize: async () => {
     instagram.browser = await puppeteer.launch({
       headless: false,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--single-process",
+        "--no-zygote",
+      ],
     });
 
     instagram.page = await instagram.browser.newPage();
+
+    await instagram.page.setUserAgent(
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36"
+    );
   },
 
   login: async (username, password) => {
@@ -21,6 +32,7 @@ const instagram = {
     await instagram.page.waitForTimeout(1000);
 
     // writing the username and password
+
     await instagram.page.waitForSelector('input[name="username"]');
     await instagram.page.type('input[name="username"]', username, {
       delay: 50,
@@ -32,32 +44,53 @@ const instagram = {
       delay: 50,
     });
 
-    let loginButton = await instagram.page.$x(
-      '//button//div[contains(text(), "Log In")]'
-    );
+    console.log("username and password typed");
 
-    loginButton[0].click();
+    // let loginButton = await instagram.page.$x(
+    //   '//button//div[contains(text(), "Log In")]'
+    // );
+
+    // await loginButton[0].click();
+    await instagram.page.click("#loginForm > div > div:nth-child(3) > button");
 
     await instagram.page.waitForNavigation({ waitUntil: "networkidle2" });
+
+    console.log("logged in");
+    await instagram.page.goto(BASE_URL, { waitUntil: "networkidle2" });
+
+    // let modal = await instagram.page.$("body > div.RnEpo.Yx5HN");
+    // await instagram.page.waitForSelector(modal);
+
+    // await instagram.page.click(
+    //   "body > div.RnEpo.Yx5HN > div > div > div > div.mt3GC > button.aOOlW.HoLwm"
+    // );
+
 
     // clicks not now button
-    await instagram.page.evaluate(() => {
-      document
-        .querySelector(
-          "#react-root > section > main > div > div > div > div > button"
-        )
-        .click();
-    });
+    // await instagram.page.evaluate(() => {
+    //   document
+    //     .querySelector(
+    //       "#react-root > section > main > div > div > div > div > button"
+    //     )
+    //     .click();
+    // });
 
-    await instagram.page.waitForNavigation({ waitUntil: "networkidle2" });
+    await instagram.page.waitForTimeout(3000);
 
-    await instagram.page.evaluate(() => {
-      document
-        .querySelector(
-          "body > div.RnEpo.Yx5HN > div > div > div > div.mt3GC > button.aOOlW.HoLwm"
-        )
-        .click();
-    });
+    // await instagram.page.waitForSelector(
+    //   "#react-root > section > main > div > div > div > div > button"
+    // );
+
+    // await instagram.page.click(
+    //   "#react-root > section > main > div > div > div > div > button"
+    // );
+    await instagram.page.click(
+      "body > div.RnEpo.Yx5HN > div > div > div > div.mt3GC > button.aOOlW.HoLwm"
+    );
+
+    console.log("closed modal");
+
+    // await instagram.page.waitForNavigation({ waitUntil: "networkidle2" });
 
     //goes to user profile
 
@@ -123,7 +156,7 @@ const instagram = {
               });
               await instagram.page.waitForTimeout(randomIntInc(2, 4) * 1000);
 
-              let post = await instagram.page.$("form > button");
+              let post = await instagram.page.$("form > button[type='submit']");
               post.click();
             }
           }
@@ -193,7 +226,7 @@ const instagram = {
             let post = await instagram.page.$(
               `article:nth-child(${
                 x + 1
-              }) > div > section > div > form > button`
+              }) > div > section > div > form > button[type='submit']`
             );
             post.click();
           }
